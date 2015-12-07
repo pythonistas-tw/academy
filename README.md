@@ -1,8 +1,7 @@
 # Members
 ## Masters
 
-Theon Lin
-
-LittleQ
+* Theon Lin
+* LittleQ
 
 ## Padawans
