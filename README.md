@@ -5,5 +5,3 @@
 * LittleQ
 
 ## Padawans
-
-* Yi Hsiao
