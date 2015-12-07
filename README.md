@@ -6,5 +6,4 @@
 
 ## Padawans
 
-* Yi Hsiao
 * vefs
