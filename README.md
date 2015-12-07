@@ -6,4 +6,5 @@
 
 ## Padawans
 
-* Yi Hsiao
+* Yi Hsia
+* Albert Chung
