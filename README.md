@@ -10,5 +10,7 @@
 * Albert Chung
 * KS Tseng
 * niench
-* gongmusian
 * vefs
+* gongmusian
+* soundmonk
+* TonyPythoneer
