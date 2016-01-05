@@ -1,10 +1,11 @@
 from flask import Blueprint
+import flask_restful
 
 from . import auth
 
 # Blueprint app initiation:
 #     Declare this view as flask branch/blueprint app and extend its route
 users_bp = Blueprint('users', __name__)
+users_api = flask_restful.Api(users_bp)
 
-
-users_bp.add_url_rule('/me', 'me', auth.me)
+users_api.add_resource(auth.me, urls='/todos/<int:id>')
