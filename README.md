@@ -23,3 +23,4 @@
 * gongmusian
 * soundmonk
 * TonyPythoneer
+* hsnusonic
