@@ -19,12 +19,14 @@ def calc(Operatior):
         elif Operatior == OperatiorEnum.divide:
 			Ret = str(value1 / value2)
         else:
-			Ret = "Not Support Operatior"
-        return  Ret
+			Ret = "error", "Not Support Operatior"
+        return  "ok", Ret
     except ValueError as err:
         abort(406, {'errMag': err.message})
+    except TypeError as err:
+        abort(406, {'errMag': err.message})
     except Exception as err:
-		return err.message
+        return "error", err.message
 
 
 @app.route('/')
@@ -34,37 +36,41 @@ def HomePage():
 
 @app.route('/sum', methods=['GET'])
 def sumOperation():
-    return jsonify(msg=calc(OperatiorEnum.sum))
+    status, data = calc(OperatiorEnum.sum)
+    return jsonify(status=status, data=data)
 
 
 @app.route('/minus', methods=['GET'])
 def minusOperation():
-    return jsonify(msg=calc(OperatiorEnum.minus))
+    status, data = calc(OperatiorEnum.minus)
+    return jsonify(status=status, data=data)
 
 
 @app.route('/multiply', methods=['GET'])
 def multiplyOperation():
-    return jsonify(msg=calc(OperatiorEnum.multiply))
+    status, data = calc(OperatiorEnum.multiply)
+    return jsonify(status=status, data=data)
 
 
 @app.route('/divide', methods=['GET'])
 def divideOperation():
-    return jsonify(msg=calc(OperatiorEnum.divide))
+    status, data = calc(OperatiorEnum.divide)
+    return jsonify(status=status, data=data)
 
 
 @app.errorhandler(Exception)
 def handle_error(e):
     try:
         if e.code == 404:
-            return jsonify({'msg': 'Page not Found'})
+            return jsonify(status='error', msg='404')
         elif e.code == 406:
-        	return jsonify({'msg': e.description['errMag']})
+        	return jsonify(status='error', msg='406 ' + e.description['errMag'])
         else:
-            return jsonify({'status': str(e.code)})        	
+            return jsonify(status='error', msg=str(e.code))        	
     except:
-        return jsonify({'msg': 'I Cant handle this, Call me'}) 
+        return jsonify(status='error', msg='I Cant handle this, Call me') 
 
 if __name__ == "__main__":
-    #app.debug = True
+    # app.debug = True
     app.config['TRAP_HTTP_EXCEPTIONS'] = True
     app.run()
