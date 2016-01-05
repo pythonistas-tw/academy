@@ -1,6 +1,6 @@
 from flask import Flask
 
-from application import views
+from .views.users import users_bp
 
 # Main app initiation:
 #     Initiate this application as flask main app
@@ -9,4 +9,4 @@ app = Flask(__name__)
 # Route register:
 #     Set views (flask branch/blueprint apps) to register_blueprint
 #     and start the urls.
-app.register_blueprint(views.users.resource_urls, url_prefix='/users')
+app.register_blueprint(users_bp, url_prefix='/users')
