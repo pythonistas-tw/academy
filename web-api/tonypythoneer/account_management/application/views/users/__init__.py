@@ -8,6 +8,6 @@ from . import auth
 users_bp = Blueprint('users', __name__)
 users_api = Api(users_bp)
 
-users_api.add_resource(auth.me, urls='/me')
-#users_api.add_resource(auth.UserListResource, urls='')
-#users_api.add_resource(auth.UserDetailResource, urls='/<int:id>')
+#users_api.add_resource(auth.me, '')
+users_api.add_resource(auth.UserListResource, '')
+users_api.add_resource(auth.UserDetailResource, '/<id>')

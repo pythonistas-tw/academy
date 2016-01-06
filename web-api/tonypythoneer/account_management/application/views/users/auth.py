@@ -1,29 +1,49 @@
-from flask_restful import Resource, marshal_with
+from flask_restful import Resource, marshal_with, abort
 
-from .response_fields import user_list_fields
+from .request_parsers import user_parser
+from .response_fields import user_fields
 
-USER_LIST = [
-    {'id': 1, 'username': 'Tony'},
-    {'id': 2, 'username': 'John'},
-    {'id': 3, 'username': 'Tom'},
-]
+USERS = {
+    'Tony': {'username': 'Tony', 'gender': 'male', 'email': 'tony@example.com'},
+    'John': {'username': 'John', 'gender': 'male', 'email': 'john@example.com'},
+    'Tely': {'username': 'Tely', 'gender': 'male', 'email': 'tely@example.com'},
+}
 
-class me(Resource):
-    def get(self):
-        return 'fuck'
 
 class UserListResource(Resource):
-    @marshal_with(user_list_fields)
+    request_class = user_parser
+
     def get(self):
-        return {'list': USER_LIST}, 200
+        return {'list': USERS}, 200
+
+    def post(self):
+        args = self.request_class.parse_args()
+        new_id = args['username']
+        USERS[new_id] = args
+        return None, 201
 
 
 class UserDetailResource(Resource):
-    #@marshal_with(user_list_fields, envelope='list')
-    def get(self, id):
-        return id, 200
+    request_class = user_parser
 
-    '''
-    def post(self):
-        return USER_LIST, 200
-    '''
+    def get_object(self, id):
+        user = USERS.get(id, '')
+        if not user:
+            abort(400, message="Client requested a URI that doesn't map to any resource.")
+        return user
+
+    @marshal_with(user_fields)
+    def get(self, id):
+        user = self.get_object(id)
+        return user, 200
+
+    def put(self, id):
+        user = self.get_object(id)
+        args = self.request_class.parse_args()
+        USERS[id].update(args)
+        return None, 200
+
+    def delete(self, id):
+        user = self.get_object(id)
+        del USERS[id]
+        return None, 204
