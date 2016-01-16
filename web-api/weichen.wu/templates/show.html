@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Flask Template Example</title>
+  </head>
+  <body>
+    {% if op == "sum" %}
+      <p> The Answer of {{ value1 }} + {{value2}} is {{result}} </p>
+    {% elif op == "minus" %}
+      <p> The Answer of {{ value1 }} - {{value2}} is {{result}} </p>
+    {% elif op == "multiply" %}
+      <p> The Answer of {{ value1 }} * {{value2}} is {{result}} </p>
+    {% elif op == "divide" %}
+      <p> The Answer of {{ value1 }} / {{value2}} is {{result}} </p>
+    {% else %}
+      <p> No operator match!! </p>
+    {% endif %}
+  </body>
+</html>
