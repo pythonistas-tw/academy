@@ -66,7 +66,7 @@ def multiply():
 		return status +' '+msg
 
 	mul_result = ("%.2f" %mul_result)
-	print "=> MULTIPLY: ", mul_result
+	#print "=> MULTIPLY: ", mul_result
 	return str(mul_result)
 #------------------------------------------------
 @app.route("/divide", methods=['GET', 'POST'])
@@ -84,7 +84,7 @@ def divide():
 		return status +' '+msg
 
 	div_result = ("%.2f" %div_result)
-	print "=> DIVIDE: ", div_result
+	#print "=> DIVIDE: ", div_result
 	return str(div_result)
 
 if __name__ == "__main__":
