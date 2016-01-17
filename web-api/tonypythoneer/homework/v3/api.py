@@ -5,6 +5,7 @@
 """Numeric Expression
 """
 from flask import Flask, jsonify
+
 from marshmallow import Schema, fields
 from webargs.flaskparser import use_args
 
@@ -36,37 +37,18 @@ def sum(args):
     result = args['value1'] + args['value2']
     return jsonify({"result": result}), 200
 
-'''
-# Function-based views: test
-@app.route('/test/<int:fuck>', methods=['GET'])
-def test(fuck):
-    return jsonify({"fuck": fuck}), 200
-
-
-# Function-based views: test2
-@app.route('/test2/<int:fuck>', methods=['GET'])
-@use_args({'num': fields.Int(required=True, location='query')})
-def test2(args, fuck):
-    return jsonify({"fuck": fuck}), 200
-
-@app.route('/user/<int:uid>')
-@use_args({'per_page': fields.Int()})
-def user_detail(args, uid):
-    return ('The user page for user {uid}, '
-            'showing {per_page} posts.').format(uid=uid,
-                                                per_page=args['per_page'])
-'''
 
 @app.errorhandler(422)
-def handle_bad_request_by_webargs(err):
-    # webargs attaches additional metadata to the `data` attribute
-    data = getattr(err, 'data')
-    messages = data['exc'].messages if data else ['Invalid request']
+def handle_webargs(err):
+    # Data process: field name with error message
+    #   example: Orinally, it's like this {'value2': [u'Not a valid number.']}.
+    #            It will convert to {'value2': u'Not a valid number.'}
+    msgs = { k:v.pop() for k,v in err.data['messages'].items()}
     return jsonify({
         'error_code': 0,
         'message': "Invalid request could not be understood "
                    "by the server due to malformed syntax.",
-        'errors': messages,
+        'errors': msgs,
     }), 400
 
 
