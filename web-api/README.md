@@ -55,7 +55,7 @@ Learning how to built a single webpage with template. Using flask to develop a w
 Request:
 
 ```
-http://127.0.0.1/count?op=sum&value=1&value=2
+http://127.0.0.1/count?op=sum&value1=1&value2=1
 ```
 
 Response:
