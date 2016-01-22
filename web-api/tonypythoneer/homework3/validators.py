@@ -14,11 +14,11 @@ def validate_min_length(value, min_length):
     """Length must not be greater than %(min_length)s."""
     message = "Length must be greater than %s."
     if len(value) < min_length:
-        raise ValidationError(message % value)
+        raise ValidationError(message % min_length)
 
 
 def validate_max_length(value, max_length):
     """Length must not be greater than %(max_length)s."""
     message = "Length must not be greater than %s."
     if len(value) > max_length:
-        raise ValidationError(message % value)
+        raise ValidationError(message % max_length)
