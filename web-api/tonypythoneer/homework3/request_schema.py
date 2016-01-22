@@ -13,6 +13,7 @@ from validators import validate_max_length, validate_min_length
 class SignupSchema(Schema):
     account = fields.Email(required=True, location='json')
     password = fields.Str(required=True, location='json')
+    nickname = fields.Str(location='json')
 
     class Meta:
         strict = True
@@ -24,3 +25,8 @@ class SignupSchema(Schema):
     @validates('password')
     def validate_account(self, value):
         validate_min_length(value, min_length=3)
+
+    @validates('nickname')
+    def validate_nickname(self, value):
+        if value:
+            validate_max_length(value, max_length=255)
