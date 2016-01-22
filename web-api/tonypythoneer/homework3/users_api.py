@@ -4,9 +4,10 @@
 #  @date          20160121
 """main app
 """
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+from sqlalchemy.orm.exc import NoResultFound
 from webargs.flaskparser import use_args
 
 from db_connector import DbConnecter
@@ -31,9 +32,18 @@ def signup(args):
         user = User(**args)
         session.add(user)
         session.commit()
-    except IntegrityError as err:
-        err.data = user_errors.USER_ERR_1001_REGISTERED_ACC
+    except IntegrityError as e:
+        e.data = user_errors.USER_ERR_1001_REGISTERED_ACC
         raise
+    return jsonify({"result": "OK"}), 200
+
+
+# Function-based views: Get the user
+@app.route('/users/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+def user_detail(id):
+    if request.method == 'GET':
+        user = session.query(User).filter(User.id == id).one()
+        print user
     return jsonify({"result": "OK"}), 200
 
 
@@ -65,6 +75,11 @@ def handle_sqlalchemy_exception(err):
             "message": "The account is registered."
         }
     """
+    if not hasattr(err, "data"):
+        return jsonify({
+            "error_code": 1,
+            "message": "The database schema isn't the newest."
+        }), 500
     return jsonify(err.data), 400
 
 
