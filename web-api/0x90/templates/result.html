@@ -1,0 +1,9 @@
+<!doctype html>
+<title>Result of Count</title>
+{% if error %}
+  <h1>Something happened: {{ error }}</h1>
+{% elif operatior %}
+  <h1>The Answer of {{ value1 }} {{ operatior }} {{ value2 }} is {{ answer}}</h1>
+{% else %}
+  <h1>Sorry, something's wrong</h1>
+{% endif %}
