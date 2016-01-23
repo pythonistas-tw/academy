@@ -12,7 +12,8 @@ from webargs.flaskparser import use_args
 
 from db_connector import DbConnecter
 from models import User
-from request_schema import SignupSchema
+#from request_schema import SignupSchema
+from schemas import UserSchema
 from error_handlings import user_errors
 
 
@@ -21,14 +22,14 @@ app = Flask(__name__)
 
 # Call Db session
 db_connector = DbConnecter()
-session = db_connector.get_session()
+Session = db_connector.get_session()
+session = Session()
 
 
 # Function-based views: signup
 @app.route('/signup', methods=['POST'])
-@use_args(SignupSchema(), locations=('json',))
-def signup(args):
-    user = User(**args)
+@use_args(UserSchema(), locations=('json',))
+def signup(user):
     session.add(user)
     try:
         session.commit()
@@ -77,8 +78,8 @@ def handle_sqlalchemy_exception(err):
     """
     if not hasattr(err, "data"):
         return jsonify({
-            "error_code": 1,
-            "message": "The database schema isn't the newest."
+            #"error_code": 1,
+            "message": err.message
         }), 500
     return jsonify(err.data), 400
 

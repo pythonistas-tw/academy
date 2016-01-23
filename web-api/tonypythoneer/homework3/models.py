@@ -8,9 +8,10 @@ import datetime
 import hashlib
 # import re
 
+from marshmallow import validate
 from sqlalchemy import Column, DateTime, String, Integer
 from sqlalchemy.ext.declarative import declarative_base
-# from sqlalchemy.orm import validates
+from sqlalchemy.orm import validates
 
 
 Base = declarative_base()
@@ -50,6 +51,12 @@ class User(Base):
 
     def __repr__(self):
         return "<User(account='%s')>" % (self.account)
+
+    @validates('account')
+    def validate_account(self, fieldname, value):
+        validate_email = validate.Email()
+        validate_email(value)
+        return value
 
     def set_password(self, password):
         """Using hash lib to hash password"""

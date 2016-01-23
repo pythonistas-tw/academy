@@ -5,7 +5,7 @@
 """DbConnecter
 """
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 
 
 class DbConnecter(object):
@@ -19,9 +19,8 @@ class DbConnecter(object):
         self.engine = create_engine(self.dbname)
 
     def _create_session(self):
-        Session = sessionmaker()
-        Session.configure(bind=self.engine)
-        self.session = Session()
+        self.session = scoped_session(sessionmaker())
+        self.session.configure(bind=self.engine)
 
     def get_session(self):
         return self.session
