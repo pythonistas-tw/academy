@@ -9,15 +9,15 @@ def isfloat(s):
 
 def check_parameter(param):
     if None in param:
-        return False, '406', 'Lose Key'
+        return False, 406, 'Lose Key'
     elif "" in param:
-        return False, '406', 'Lose Value'
+        return False, 406, 'Lose Value'
     else:
         for x in param:
             if isfloat(x) == False: 
-                return False, '406', 'Value Type Error'
+                return False, 406, 'Value Type Error'
                 break
-    return True, '200', 'OK'
+    return True, 200, 'OK'
 
 def float_2_dec(number):
     return ("%.2f" %number)
@@ -83,7 +83,7 @@ def divide():
     chk, status, error_msg = check_parameter(param)
     if chk:
         if float(value2) == 0:
-            return jsonify(Error='Value2 shold not be zero!', status='200')
+            return jsonify(Error='Value2 shold not be zero!', status=status)
         else:
             div_result = float_2_dec(float(value1) / float(value2))
             return jsonify(divide=div_result, status=status)
@@ -92,7 +92,7 @@ def divide():
 
 @app.errorhandler(404)
 def page_no_found(e):
-    return jsonify(Error='Page No Found', status='400')
+    return jsonify(Error='Page No Found', status=404)
 
 if __name__ == "__main__":
     app.run(debug = True)
