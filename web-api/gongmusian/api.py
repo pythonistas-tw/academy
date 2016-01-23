@@ -90,6 +90,10 @@ def divide():
     else:
         return jsonify(Error=error_msg, status=status)
 
+@app.errorhandler(404)
+def page_no_found(e):
+    return jsonify(Error='Page No Found', status='400')
+
 if __name__ == "__main__":
     app.run(debug = True)
 
