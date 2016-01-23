@@ -26,11 +26,11 @@ session = db_connector.get_session()
 
 # Function-based views: signup
 @app.route('/signup', methods=['POST'])
-@use_args(SignupSchema())
+@use_args(SignupSchema(), locations=('json',))
 def signup(args):
+    user = User(**args)
+    session.add(user)
     try:
-        user = User(**args)
-        session.add(user)
         session.commit()
     except IntegrityError as e:
         e.data = user_errors.USER_ERR_1001_REGISTERED_ACC
@@ -39,10 +39,10 @@ def signup(args):
 
 
 # Function-based views: Get the user
-@app.route('/users/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-def user_detail(id):
+@app.route('/users/<int:user_id>', methods=['GET', 'PUT', 'DELETE'])
+def user_detail(user_id):
     if request.method == 'GET':
-        user = session.query(User).filter(User.id == id).one()
+        user = session.query(User).filter(User.id == user_id).one()
         print user
     return jsonify({"result": "OK"}), 200
 
