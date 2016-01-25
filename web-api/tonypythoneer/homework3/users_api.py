@@ -4,7 +4,7 @@
 #  @date          20160121
 """main app
 """
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response, json
 
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
@@ -12,9 +12,9 @@ from webargs.flaskparser import use_args
 
 from db_connector import DbConnecter
 from models import User
-#from request_schema import SignupSchema
 from schemas import UserSchema
 from error_handlings import user_errors
+from webargs_utils import parse_args
 
 
 # Initial process: Initialize Flask app
@@ -29,23 +29,41 @@ session = Session()
 # Function-based views: signup
 @app.route('/signup', methods=['POST'])
 @use_args(UserSchema(), locations=('json',))
-def signup(user):
+def signup(args):
+    user = User(**args)
     session.add(user)
     try:
         session.commit()
     except IntegrityError as e:
         e.data = user_errors.USER_ERR_1001_REGISTERED_ACC
         raise
-    return jsonify({"result": "OK"}), 200
+    return Response(response=json.dumps({"result": "OK"}), status=200,
+                    mimetype="application/json")
 
 
 # Function-based views: Get the user
 @app.route('/users/<int:user_id>', methods=['GET', 'PUT', 'DELETE'])
 def user_detail(user_id):
-    if request.method == 'GET':
+    try:
         user = session.query(User).filter(User.id == user_id).one()
-        print user
-    return jsonify({"result": "OK"}), 200
+    except NoResultFound:
+        raise
+    if request.method == 'GET':
+        schema = UserSchema()
+        data = schema.dump(user).data
+        return Response(response=json.dumps(data), status=200,
+                        mimetype="application/json")
+    if request.method == 'PUT':
+        args = parse_args(UserSchema(dump_only=("account", "password",)))
+        user.nickname = args['nickname'] if args['nickname'] else user.nickname
+        session.commit()
+        return Response(response=json.dumps({"result": "OK"}), status=200,
+                        mimetype="application/json")
+    if request.method == 'DELETE':
+        session.delete(user)
+        session.commit()
+        return Response(response=json.dumps({"result": "OK"}), status=200,
+                        mimetype="application/json")
 
 
 @app.errorhandler(422)
@@ -66,8 +84,8 @@ def handle_webargs_abort(err):
     }), 400
 
 
-@app.errorhandler(SQLAlchemyError)
-def handle_sqlalchemy_exception(err):
+@app.errorhandler(IntegrityError)
+def handle_integrityerror_exception(err):
     """Call customize error handling message from exception data
 
     return example:
@@ -76,13 +94,33 @@ def handle_sqlalchemy_exception(err):
             "message": "The account is registered."
         }
     """
-    if not hasattr(err, "data"):
-        return jsonify({
-            #"error_code": 1,
-            "message": err.message
-        }), 500
     return jsonify(err.data), 400
 
 
+@app.errorhandler(NoResultFound)
+def handle_noresultfound_exception(err):
+    """Call customize error handling message from exception data
+
+    return example:
+        {
+            "message": "Not Found"
+        }
+    """
+    return jsonify({"message": "Not Found"}), 404
+
+
+@app.errorhandler(SQLAlchemyError)
+def handle_sqlalchemyerror_exception(err):
+    """
+    """
+    return jsonify({
+        #"error_code": 1,
+        "message": err.message,
+        "doc": err.__doc__,
+        "class_name": err.__class__.__name__
+    }), 500
+
+
 if __name__ == '__main__':
+    app.config["JSON_SORT_KEYS"] = False
     app.run(debug=True)
