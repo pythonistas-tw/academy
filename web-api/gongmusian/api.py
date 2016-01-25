@@ -10,7 +10,7 @@ def isfloat(s):
 def check_parameter(param):
     if None in param:
         return False, 406, 'Lose Key'
-    elif "" in param:
+    elif '' in param:
         return False, 406, 'Lose Value'
     else:
         for x in param:
@@ -20,14 +20,14 @@ def check_parameter(param):
     return True, 200, 'OK'
 
 def float_2_dec(number):
-    return ("%.2f" %number)
+    return ('%.2f' %number)
 
 app = Flask(__name__)
-@app.route("/")
+@app.route('/')
 def hello():
-    return "Hello World!"
+    return 111
 
-@app.route("/sum", methods=['GET'])
+@app.route('/sum', methods=['GET'])
 def sum():
     sum_result = 0
     value1 = request.args.get('value1')
@@ -38,11 +38,11 @@ def sum():
     chk, status, error_msg = check_parameter(param)
     if chk:
         sum_result = float_2_dec(float(value1) + float(value2))
-        return jsonify(sum=sum_result, status=status)
+        return jsonify(sum=sum_result, status=200)
     else:
         return jsonify(Error= error_msg, status=status)
 
-@app.route("/minus", methods=['GET'])
+@app.route('/minus', methods=['GET'])
 def minus():
     minus_result = 0
     value1 = request.args.get('value1')
@@ -53,11 +53,11 @@ def minus():
     chk, status, error_msg = check_parameter(param)
     if chk:
         minus_result = float_2_dec(float(value1) - float(value2))
-        return jsonify(minus=minus_result, status=status)
+        return jsonify(minus=minus_result, status=200)
     else:
         return jsonify(Error=error_msg, status=status)
 
-@app.route("/multiply", methods=['GET'])
+@app.route('/multiply', methods=['GET'])
 def multiply():
     mul_result = 0
     value1 = request.args.get('value1')
@@ -68,11 +68,11 @@ def multiply():
     chk, status, error_msg = check_parameter(param)
     if chk:
         mul_result = float_2_dec(float(value1) * float(value2))
-        return jsonify(multiply=mul_result, status=status)
+        return jsonify(multiply=mul_result, status=200)
     else:
         return jsonify(Error=error_msg, status=status)
 
-@app.route("/divide", methods=['GET'])
+@app.route('/divide', methods=['GET'])
 def divide():
     div_result = 0
     value1 = request.args.get('value1')
@@ -86,7 +86,7 @@ def divide():
             return jsonify(Error='Value2 shold not be zero!', status=status)
         else:
             div_result = float_2_dec(float(value1) / float(value2))
-            return jsonify(divide=div_result, status=status)
+            return jsonify(divide=div_result, status=200)
     else:
         return jsonify(Error=error_msg, status=status)
 
@@ -94,6 +94,6 @@ def divide():
 def page_no_found(e):
     return jsonify(Error='Page No Found', status=404)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug = True)
 
