@@ -47,7 +47,7 @@ class User(Base):
     def __init__(self, account, password, nickname=None):
         self.account = account
         self.password = make_password(password)
-        self.nickname = nickname if not nickname else make_default_nickname(account)
+        self.nickname = nickname if nickname else make_default_nickname(account)
 
     def __repr__(self):
         return "<User(account='%s')>" % (self.account)
