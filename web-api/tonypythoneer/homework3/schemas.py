@@ -1,33 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#  @first_date    20160123
-#  @date          20160123
-"""ModelSchema
-
-Source:
-https://marshmallow-sqlalchemy.readthedocs.org/en/latest/#generate-marshmallow-schemas
-
-It's like ModelSerializer of DRF.
-http://www.django-rest-framework.org/api-guide/serializers/#modelserializer
+#  @first_date    20160121
+#  @date          20160121
+"""schemas
 """
-from marshmallow_sqlalchemy import ModelSchema
-
-from db_connector import DbConnecter
-from models import User
+from marshmallow import Schema, fields, validate
 
 
-# Call Db session
-db_connector = DbConnecter()
-Session = db_connector.get_session()
+class UserSchema(Schema):
+    id = fields.Int()
 
+    account = fields.Email(required=True, validate=validate.Length(max=255))
+    password = fields.Str(required=True, validate=validate.Length(min=3, max=128))
+    nickname = fields.Str(missing='')
 
-class BaseSchema(ModelSchema):
+    created_at = fields.DateTime()
+    updated_at = fields.DateTime()
+
     class Meta:
-        sqla_session = Session
+        """Meta
 
-
-class UserSchema(BaseSchema):
-
-    # Inherit BaseSchema's options
-    class Meta(BaseSchema.Meta):
-        model = User
+        http://marshmallow.readthedocs.org/en/latest/api_reference.html#marshmallow.Schema.Meta
+        """
+        strict = True
+        # Tuple or list of fields to exclude from deserialization.
+        # You can consider that as : json.loads(data, excludes=(...,))
+        dump_only = ('id', 'created_at', 'updated_at',)
+        # Tuple or list of fields to exclude from serialized results.
+        # # You can consider that as : json.dumps(data, excludes=(...,))
+        load_only = ('password',)
