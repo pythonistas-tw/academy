@@ -60,8 +60,7 @@ def user_detail(user_id):
     if request.method == 'DELETE':
         session.delete(user)
         session.commit()
-        return Response(response=json.dumps({"result": "OK"}), status=204,
-                        mimetype="application/json")
+        return Response(status=204, mimetype="application/json")
 
 
 @app.errorhandler(422)
@@ -91,7 +90,7 @@ def handle_integrityerror_exception(err):
             "message": "The account is registered."
         }
     """
-    return jsonify(err.data), 400
+    return jsonify(err.data), 409
 
 
 @app.errorhandler(NoResultFound)
