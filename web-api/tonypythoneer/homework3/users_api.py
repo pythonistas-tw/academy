@@ -37,8 +37,7 @@ def signup(args):
     except IntegrityError as e:
         e.data = user_errors.USER_ERR_1001_REGISTERED_ACC
         raise
-    return Response(response=json.dumps({"result": "OK"}), status=200,
-                    mimetype="application/json")
+    return Response(status=201, mimetype="application/json")
 
 
 # Function-based views: Get the user
@@ -51,18 +50,17 @@ def user_detail(user_id):
     if request.method == 'GET':
         schema = UserSchema()
         data = schema.dump(user).data
-        return Response(response=json.dumps(data), status=200,
+        return Response(response=json.dumps(dict(data=data)), status=200,
                         mimetype="application/json")
     if request.method == 'PUT':
         args = parse_args(UserSchema(dump_only=("account", "password",)))
         user.nickname = args['nickname'] if args['nickname'] else user.nickname
         session.commit()
-        return Response(response=json.dumps({"result": "OK"}), status=200,
-                        mimetype="application/json")
+        return Response(status=200, mimetype="application/json")
     if request.method == 'DELETE':
         session.delete(user)
         session.commit()
-        return Response(response=json.dumps({"result": "OK"}), status=200,
+        return Response(response=json.dumps({"result": "OK"}), status=204,
                         mimetype="application/json")
 
 
@@ -86,7 +84,7 @@ def handle_webargs_abort(err):
 
 @app.errorhandler(IntegrityError)
 def handle_integrityerror_exception(err):
-    """Call customize error handling message from exception data
+    """Execute insert but the data has duplicate index
 
     return example:
         {
@@ -99,7 +97,7 @@ def handle_integrityerror_exception(err):
 
 @app.errorhandler(NoResultFound)
 def handle_noresultfound_exception(err):
-    """Call customize error handling message from exception data
+    """Execute query but it doesn't find the data
 
     return example:
         {
@@ -109,12 +107,11 @@ def handle_noresultfound_exception(err):
     return jsonify({"message": "Not Found"}), 404
 
 
-@app.errorhandler(SQLAlchemyError)
-def handle_sqlalchemyerror_exception(err):
-    """
+@app.errorhandler(500)
+def handle_servererror_exception(err):
+    """When it happens unknown error, it will return detail message.
     """
     return jsonify({
-        #"error_code": 1,
         "message": err.message,
         "doc": err.__doc__,
         "class_name": err.__class__.__name__
