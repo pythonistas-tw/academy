@@ -6,7 +6,7 @@
 """
 from flask import Flask, jsonify, request, Response, json
 
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 from webargs.flaskparser import use_args
 
@@ -50,7 +50,7 @@ def user_detail(user_id):
     if request.method == 'GET':
         schema = UserSchema()
         data = schema.dump(user).data
-        return Response(response=json.dumps(dict(data=data)), status=200,
+        return Response(response=json.dumps({"data": data}), status=200,
                         mimetype="application/json")
     if request.method == 'PUT':
         args = parse_args(UserSchema(dump_only=("account", "password",)))
@@ -75,7 +75,6 @@ def handle_webargs_abort(err):
     """
     msgs = {k: v.pop() for k, v in err.data['messages'].items()}
     return jsonify({
-        'error_code': 0,
         'message': "Invalid request could not be understood "
                    "by the server due to malformed syntax.",
         'errors': msgs,
