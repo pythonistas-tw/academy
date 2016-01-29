@@ -55,7 +55,7 @@ Learning how to built a single webpage with template. Using flask to develop a w
 Request:
 
 ```
-http://127.0.0.1/count?op=sum&value=1&value=2
+http://127.0.0.1/count?op=sum&value1=1&value2=1
 ```
 
 Response:
@@ -67,3 +67,18 @@ The Answer of 1 + 1 is 2
 #### Requirement
 
 You must use the template when rendering Response.
+
+### DB-Exercise I
+
+#### Task
+
+Learning how to create a database and master basic CRUD methods. Using SQLAlchemy to create a user db with sqlite. Develop the package to create, read, update, and delete user account.
+
+* Database: db.sqlite
+* Table: User
+* Fields: 
+  * id: Integer
+  * account: String (e-mail format)
+  * password: String (SHA1 hashed Password)
+
+You should write your code in models.py.
