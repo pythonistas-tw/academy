@@ -1,27 +1,30 @@
 # Course
 ## Environments
-### Git/Github
-### Virtualenv/Conda
-## Python
-### Web Site/API
-#### Flask
+
+  * Git/Github
+  * Virtualenv/Conda
+
+## Python :snake:
+
+  * Website/API
+  * Flask
 
 # Members
-## Masters
+## Masters :star2:
 
-* Theon Lin
-* LittleQ
-* Mosky
+  * Theon Lin
+  * LittleQ
+  * Mosky
 
 ## Padawans
 
-* Yi Hsiao
-* Albert Chung
-* KS Tseng
-* niench
-* vefs
-* gongmusian
-* soundmonk
-* TonyPythoneer
-* hsnusonic
-* maomao
+  * Yi Hsiao
+  * Albert Chung
+  * KS Tseng
+  * niench
+  * vefs
+  * gongmusian
+  * soundmonk
+  * TonyPythoneer
+  * hsnusonic
+  * maomao
