@@ -13,8 +13,8 @@ class APITestCase(unittest.TestCase):
 
     def test_simple_alrithmatic(self):
         operation_list=["sum","minus","multiply","divide"]
-        correct_value_results_list=[2,0,1,1]
-        for operation,correct_value_results in zip(operation_list, correct_value_results_list):
+        correct_values_results_list=[2,0,1,1]
+        for operation,correct_value_results in zip(operation_list, correct_values_results_list):
         	# correct case
             value = self.app.get("/"+operation+"?value1=1&value2=1")
             if float(value.data.decode())==correct_value_results:
