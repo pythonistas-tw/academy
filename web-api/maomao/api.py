@@ -9,12 +9,14 @@ def f_sum():
         try:
             value1 = request.args.get("value1")
             value2 = request.args.get("value2")
-            if value1 == None or value2 == None:
-                return "406 Error"
+            if value1 == None or value1 == "" or value2 == None or value2 == "":
+                return "Missing values", 406
             result = float(value1)+float(value2)
             return str(result)
+        except ValueError:
+            return "Invalid values", 406
         except:
-            return "406 Error"
+            return "Unexpected error", 406
 
 @app.route("/minus", methods=["GET"])
 def f_minus():
@@ -22,12 +24,14 @@ def f_minus():
         try:
             value1 = request.args.get("value1")
             value2 = request.args.get("value2")
-            if value1 == None or value2 == None:
-                return "406 Error"
+            if value1 == None or value1 == "" or value2 == None or value2 == "":
+                return "Missing values", 406
             result = float(value1)-float(value2)
             return str(result)
+        except ValueError:
+            return "Invalid values", 406
         except:
-            return "406 Error"
+            return "Unexpected error", 406
 
 @app.route("/multiply", methods=["GET"])
 def f_multiply():
@@ -35,12 +39,14 @@ def f_multiply():
         try:
             value1 = request.args.get("value1")
             value2 = request.args.get("value2")
-            if value1 == None or value2 == None:
-                return "406 Error"
+            if value1 == None or value1 == "" or value2 == None or value2 == "":
+                return "Missing values", 406
             result = float(value1)*float(value2)
             return str(result)
+        except ValueError:
+            return "Invalid values", 406
         except:
-            return "406 Error"
+            return "Unexpected error", 406
 
 @app.route("/divide", methods=["GET"])
 def f_divide():
@@ -48,12 +54,14 @@ def f_divide():
         try:
             value1 = request.args.get("value1")
             value2 = request.args.get("value2")
-            if value1 == None or value2 == None:
-                return "406 Error"
+            if value1 == None or value1 == "" or value2 == None or value2 == "":
+                return "Missing values", 406
             result = float(value1)/float(value2)
             return str(result)
+        except ValueError:
+            return "Invalid values", 406
         except:
-            return "406 Error"
+            return "Unexpected error", 406
 
 if __name__ == '__main__':
     app.run()

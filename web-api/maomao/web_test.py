@@ -13,20 +13,20 @@ case = [
 ]
 
 sum_answer = ["The Answer of 1 + 1 is 2.0", "The Answer of 52 + 7 is 59.0", "The Answer of 100.5 + 33.1 is 133.6"]
-sum_answer += ["Missing values, 406 Error"]*4
-sum_answer += ["Invalid values, 406 Error"]*3
+sum_answer += ["Missing values"]*4
+sum_answer += ["Invalid values"]*3
 
 minus_answer = ["The Answer of 1 - 1 is 0.0", "The Answer of 52 - 7 is 45.0", "The Answer of 100.5 - 33.1 is 67.4"]
-minus_answer += ["Missing values, 406 Error"]*4
-minus_answer += ["Invalid values, 406 Error"]*3
+minus_answer += ["Missing values"]*4
+minus_answer += ["Invalid values"]*3
 
 multiply_answer = ["The Answer of 1 * 1 is 1.0", "The Answer of 52 * 7 is 364.0", "The Answer of 100.5 * 33.1 is 3326.55"]
-multiply_answer += ["Missing values, 406 Error"]*4
-multiply_answer += ["Invalid values, 406 Error"]*3
+multiply_answer += ["Missing values"]*4
+multiply_answer += ["Invalid values"]*3
 
 divide_answer = ["The Answer of 1 / 1 is 1.0", "The Answer of 52 / 7 is 7.428571428571429", "The Answer of 100.5 / 33.1 is 3.036253776435045"]
-divide_answer += ["Missing values, 406 Error"]*4
-divide_answer += ["Invalid values, 406 Error"]*3
+divide_answer += ["Missing values"]*4
+divide_answer += ["Invalid values"]*3
 
 class FlaskrTestCase(unittest.TestCase):
 
@@ -73,7 +73,7 @@ class FlaskrTestCase(unittest.TestCase):
         rv = self.app.get("/count?op=divide&value1=22&value2=0")
         page = etree.HTML(rv.data)
         for i in page.xpath(u"//em"):
-            assert i.text == "Zero Division Error, 406 Error", "The Response of {} isn't correct.".format("/count?op=divide&value1=22&value2=0")
+            assert i.text == "Zero Division Error", "The Response of {} isn't correct.".format("/count?op=divide&value1=22&value2=0")
 
 if __name__ == '__main__':
     unittest.main()
