@@ -1,0 +1,17 @@
+<html>
+<head>
+	<title>{{ msg }}</title>
+	<style>
+            body{
+               background-color: lightyellow;
+            }
+        </style>
+</head>
+<body>
+    {% if error %}
+        <em style=color:Red>{{ error }}</em>
+    {% else %}
+        <em style=color:LightSeaGreen>{{ msg }}</em>
+    {% endif %}
+</body>
+</html>
