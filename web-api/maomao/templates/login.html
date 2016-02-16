@@ -1,0 +1,20 @@
+<html>
+<head>
+    <title>Login Page</title>
+</head>
+<body>
+    {% for e in error %}
+    <p style=color:Red>{{ e }}</p>
+    {% endfor %}
+    {% if current_user.is_authenticated %}
+    <p>You have already logined.</p>
+    {% else %}
+        {% if form %}
+    <form action="" method="post">
+        {{ form.as_html()|safe }}
+        <input type="submit" value="Login">
+    </form>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
