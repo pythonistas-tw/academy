@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<title>Login</title>
+  <h2>Login Page</h2>
+<div class="container"> 
+  {% for message in form.username.errors %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+   
+  {% for message in form.password.errors %}
+    <div class="flash">{{ message }}</div>
+  {% endfor %}
+   
+  <form action="{{ url_for('.login') }}" method=post>
+      {{ form.hidden_tag() }}
+       
+      {{ form.username.label }}
+      {{ form.username }}
+       
+      {{ form.password.label }}
+      {{ form.password }}
+       
+      {{ form.submit }}
+  </form>
+</div>
+</html>
