@@ -28,3 +28,4 @@
   * TonyPythoneer
   * hsnusonic
   * maomao
+  * ShunJen
