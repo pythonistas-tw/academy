@@ -4,19 +4,16 @@ from flask import render_template
 
 app = Flask(__name__)
 
-@app.errorhandler(406)
 def f_sum(value1, value2, v1, v2):
     result = v1+v2
     msg = "The Answer of {} + {} is {}".format(value1, value2, result)
     return render_template('count.html', msg=msg)
 
-@app.errorhandler(406)
 def f_minus(value1, value2, v1, v2):
     result = v1-v2
     msg = "The Answer of {} - {} is {}".format(value1, value2, result)
     return render_template('count.html', msg=msg)
 
-@app.errorhandler(406)
 def f_multiply(value1, value2, v1, v2):
     result = v1*v2
     msg = "The Answer of {} * {} is {}".format(value1, value2, result)
@@ -34,6 +31,7 @@ def f_divide(value1, value2, v1, v2):
 operation = {"sum":f_sum, "minus":f_minus, "multiply":f_multiply, "divide":f_divide}
 
 @app.route("/count", methods=["GET"])
+@app.errorhandler(406)
 def f_count():
     if request.method == "GET":
         try:
