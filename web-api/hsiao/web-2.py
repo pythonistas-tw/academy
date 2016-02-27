@@ -41,9 +41,8 @@ def load_user(email):
 @login_manager.request_loader
 def request_loader(request):
 	cur = get_db().cursor()
-	email = request.form.get('email')
+	email = request.form['email']
 	if email not in cur.execute('SELECT account FROM User').fetchall():
-		print('GG')
 		return
 	
 	user = User()
@@ -51,30 +50,16 @@ def request_loader(request):
 	password = hashlib.sha1(request.form['pw'].encode('utf-8')).hexdigest()
     # DO NOT ever store passwords in plaintext and always compare password
     # hashes using constant-time comparison!
-	if cur.execute('SELECT password FROM User WHERE account="'+ email +'"').fetchall()==[]:
+	if cur.execute('SELECT password FROM User WHERE account="'+ email +'" AND '+'password="'+password+'"').fetchall()==[]:
 		user.is_authenticated = False
-		print('False')
 	else:
 		user.is_authenticated = True
-		print('True')
 	return user
-
-@app.route('/')
-def index():
-	cur = get_db().cursor()
-	password=hashlib.sha1('zxczxczxcx'.encode('utf-8')).hexdigest()
-	if cur.execute('SELECT account,password FROM User WHERE account="username2@gmail.com" AND password="'+password+'"').fetchall()==[]:
-		print("none")
-	else:
-		print("exist")
-	return 'test'
 
 @app.route('/hello',methods=['GET'])
 def hello():
 	if flask_login.current_user.is_authenticated:
-		return '''
-				<h1>Success</h1>
-			'''
+		return render_template('hello.html', user=flask_login.current_user.id)
 	else:
 		return redirect(url_for('login'))
 
@@ -94,9 +79,9 @@ def login():
 	if cur.execute('SELECT account,password FROM User WHERE account="'+email+'" AND password="'+password+'"').fetchall()!=[]:
 		user = User()
 		user.id = email
-		flask_login.login_user(user)
-		return 'Good'
-		# return redirect(url_for('hello'))
+		flask_login.login_user(user,force=False)
+		flask_login.current_user=user
+		return redirect(url_for('hello'))
 	else:
 		return 'Bad login'
 
@@ -116,6 +101,6 @@ def unauthorized_handler():
 
 if __name__ == '__main__':
 	# uncomment to debug
-	app.debug = True
+	# app.debug = True
 	app.run()
 
