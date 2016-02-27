@@ -1,47 +1,86 @@
-from flask import Flask, request, redirect, url_for, render_template
+from flask import Flask, request, redirect, url_for, render_template, g
 import flask.ext.login as flask_login
+import sqlite3
+import hashlib
+
 
 app = Flask(__name__)
 app.secret_key = 'super secret string'  # Change this!
 login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 
-users = {'foo@bar.tld': {'pw': 'secret'}}
+DATABASE = 'db.sqlite'
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+    return db
+
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
+
+
+
 
 class User(flask_login.UserMixin):
-    pass
+     pass
 
 @login_manager.user_loader
 def load_user(email):
-	if email not in users:
+	cur = get_db().cursor()
+	if email not in cur.execute('SELECT account FROM User').fetchall():
 		return
+
 	user = User()
 	user.id = email
 	return user
 
 @login_manager.request_loader
 def request_loader(request):
+	cur = get_db().cursor()
 	email = request.form.get('email')
-	if email not in users:
+	if email not in cur.execute('SELECT account FROM User').fetchall():
+		print('GG')
 		return
-
+	
 	user = User()
 	user.id = email
-
+	password = hashlib.sha1(request.form['pw'].encode('utf-8')).hexdigest()
     # DO NOT ever store passwords in plaintext and always compare password
     # hashes using constant-time comparison!
-	user.is_authenticated = request.form['pw'] == users[email]['pw']
-
+	if cur.execute('SELECT password FROM User WHERE account="'+ email +'"').fetchall()==[]:
+		user.is_authenticated = False
+		print('False')
+	else:
+		user.is_authenticated = True
+		print('True')
 	return user
+
+@app.route('/')
+def index():
+	cur = get_db().cursor()
+	password=hashlib.sha1('zxczxczxcx'.encode('utf-8')).hexdigest()
+	if cur.execute('SELECT account,password FROM User WHERE account="username2@gmail.com" AND password="'+password+'"').fetchall()==[]:
+		print("none")
+	else:
+		print("exist")
+	return 'test'
 
 @app.route('/hello',methods=['GET'])
 def hello():
-	return '''
-			<h1>Success</h1>
-           '''
+	if flask_login.current_user.is_authenticated:
+		return '''
+				<h1>Success</h1>
+			'''
+	else:
+		return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+	cur = get_db().cursor()
 	if request.method == 'GET':
 		return '''
 			<form action='login' method='POST'>
@@ -51,13 +90,15 @@ def login():
 			</form>
                '''
 	email = request.form['email']
-	if request.form['pw'] == users[email]['pw']:
+	password=hashlib.sha1(request.form['pw'].encode('utf-8')).hexdigest()
+	if cur.execute('SELECT account,password FROM User WHERE account="'+email+'" AND password="'+password+'"').fetchall()!=[]:
 		user = User()
 		user.id = email
 		flask_login.login_user(user)
-		return redirect(url_for('hello'))
-
-	return 'Bad login'
+		return 'Good'
+		# return redirect(url_for('hello'))
+	else:
+		return 'Bad login'
 
 @app.route('/protected')
 @flask_login.login_required
