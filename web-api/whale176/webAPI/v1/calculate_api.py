@@ -1,5 +1,5 @@
 from __future__ import division
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
@@ -12,21 +12,21 @@ def do_sum():
     values = read_args_from_url()
     v1 = validate_num(values["value1"])
     v2 = validate_num(values["value2"])
-    return str(v1 + v2)
+    return jsonify(v1 + v2)
 
 @app.route('/minus')
 def do_minus():
     values = read_args_from_url()
     v1 = validate_num(values["value1"])
     v2 = validate_num(values["value2"])
-    return str(v1 - v2)
+    return jsonify(v1 - v2)
 
 @app.route('/multiply')
 def do_multiply():
     values = read_args_from_url()
     v1 = validate_num(values["value1"])
     v2 = validate_num(values["value2"])
-    return str(v1 * v2)
+    return jsonify(v1 * v2)
 
 @app.route('/divide')
 def do_divide():
@@ -35,9 +35,7 @@ def do_divide():
     v2 = validate_num(values["value2"])
     if v2 == 0:
         raise ValueError('[Invalid parameter input] value2 could not be 0.')
-
-    result = validate_num(v1 / v2)
-    return str(result)
+    return jsonify(v1 / v2)
 
 def validate_num(var):
     if var is None:
