@@ -28,3 +28,5 @@
   * TonyPythoneer
   * hsnusonic
   * maomao
+  * ShunJen
+  * Whale176
