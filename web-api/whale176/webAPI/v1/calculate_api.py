@@ -1,5 +1,7 @@
 from __future__ import division
-from flask import Flask, request, jsonify
+from flask import Flask, request
+from werkzeug.exceptions import HTTPException
+import json
 
 app = Flask(__name__)
 
@@ -12,21 +14,21 @@ def do_sum():
     values = read_args_from_url()
     v1 = validate_num(values["value1"])
     v2 = validate_num(values["value2"])
-    return jsonify(v1 + v2)
+    return str(v1 + v2)
 
 @app.route('/minus')
 def do_minus():
     values = read_args_from_url()
     v1 = validate_num(values["value1"])
     v2 = validate_num(values["value2"])
-    return jsonify(v1 - v2)
+    return str(v1 - v2)
 
 @app.route('/multiply')
 def do_multiply():
     values = read_args_from_url()
     v1 = validate_num(values["value1"])
     v2 = validate_num(values["value2"])
-    return jsonify(v1 * v2)
+    return str(v1 * v2)
 
 @app.route('/divide')
 def do_divide():
@@ -34,12 +36,13 @@ def do_divide():
     v1 = validate_num(values["value1"])
     v2 = validate_num(values["value2"])
     if v2 == 0:
-        raise ValueError('[Invalid parameter input] value2 could not be 0.')
-    return jsonify(v1 / v2)
+        # Flask.abort(406)
+        raise InputError('[Invalid parameter input] value2 could not be 0.')
+    return str(v1 / v2)
 
 def validate_num(var):
     if var is None:
-        raise AttributeError('There is no validate parameters entered.')
+        raise InputError('There is no validate parameters entered.')
 
     if type(var) == 'int' or type(var) == 'float':
         return var
@@ -47,8 +50,7 @@ def validate_num(var):
         s = num(str(var))
         return s
 
-    raise ValueError('[Invalid parameter input] The {} is not a validate number to calculate.'.format(var))
-    raise AttributeError('There is no validate number entered.')
+    raise InputError('[Invalid parameter input] The {} is not a validate number to calculate.'.format(var))
 
 def num(s):
     try:
@@ -70,6 +72,15 @@ def logger_warning(target, msg=None):
 def logger_error(target, msg=None):
     app.logger.error(('{}:{}'.format(msg, target)))
 
+class InputError(HTTPException):
+    HTTPException.code = 406
+
+class JSONException(HTTPException):
+    def get_body(self, environ):
+        return json.dumps({self.code: 406})
+
+    def get_headers(self, environ):
+        return [('Content-Type', 'application/json')]
 
 if __name__ == '__main__':
     app.run(debug=True)
