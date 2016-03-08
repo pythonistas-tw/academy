@@ -1,70 +1,73 @@
 from flask import Flask, request
-import sys
 
 app = Flask(__name__)
 
-
-# http://127.0.0.1/sum?value1=1&value2=1
-
 @app.route('/')
 def index():
-    return 'Index Page'
+    return 'Welcome! You are able to use the url to calculate sum/minus/multiply/divide with the parameters.'
 
 @app.route('/sum')
 def do_sum():
-    try:
-        value1 = request.args.get('value1')
-        value2 = request.args.get('value2')
-        return str(validate_num(value1) + validate_num(value2))
-    except (TypeError, ValueError) as e:
-        return str(e)
+    values = read_args_from_url()
+    v1 = validate_num(values["value1"])
+    v2 = validate_num(values["value2"])
+    return str(v1 + v2)
 
+@app.route('/minus')
+def do_minus():
+    values = read_args_from_url()
+    v1 = validate_num(values["value1"])
+    v2 = validate_num(values["value2"])
+    return str(v1 - v2)
+
+@app.route('/multiply')
+def do_multiply():
+    values = read_args_from_url()
+    v1 = validate_num(values["value1"])
+    v2 = validate_num(values["value2"])
+    return str(v1 * v2)
+
+@app.route('/divide')
+def do_divide():
+    values = read_args_from_url()
+    v1 = validate_num(values["value1"])
+    v2 = validate_num(values["value2"])
+    if v2 == 0:
+        raise ValueError('[Invalid parameter input] value2 could not be 0.')
+    return str(v1 / v2)
 
 def validate_num(var):
-    if var.isnumeric() is False:
-        raise ValueError('The {} is not a number.'.format(var))
-    return var
+    if var is None:
+        raise AttributeError('There is no validate parameters entered.')
 
-def logger(target):
-    return app.logger.debug(target)
+    if type(var) == 'int' or type(var) == 'float':
+        return var
+    else:
+        s = num(str(var))
+        return s
 
-# @app.route('/minus')
-# def calcul_minus():
-#     return 'Hello World'
+    raise ValueError('[Invalid parameter input] The {} is not a validate number to calculate.'.format(var))
+    raise AttributeError('There is no validate number entered.')
 
-# @app.route('/multiply')
-# def calcul_multiply():
-#     return 'Hello World'
+def num(s):
+    try:
+        return int(s)
+    except ValueError:
+        return float(s)
 
-# @app.route('/divide')
-# def calcul_divide():
-#     return 'Hello World'
+def read_args_from_url():
+    value1 = request.args.get('value1')
+    value2 = request.args.get('value2')
+    return {'value1': validate_num(value1), 'value2': validate_num(value2)}
 
-# def get_values_parameters():
-#     val01 = request.args.get('value1')
-#     val02 = request.args.get('value2')
-#     return (val01, val02)
+def logger(target, msg=None):
+    app.logger.debug('{}:{}'.format(msg, target))
 
+def logger_warning(target, msg=None):
+    app.logger.warning('{}:{}'.format(msg, target))
 
-
-
-# def validate_two_parameters():
-#     if len(sys.argv) !== 2 :
-#         pstderr("We need 2 interger numbers to calculate.")
-#         sys.exit(1)
-
-# def main():
-# with app.test_request_context():
-#     validate_two_parameters()
-
-#     val01 = sys.argv[1]
-#     val02 = sys.argv[2]
-
-#     print url_for('index')
-#     print url_for('login')
-#     print url_for('login', value1=val01, value2=val02)
-#     print url_for('profile', username='John Doe')
-
+def logger_error(target, msg=None):
+    app.logger.error(('{}:{}'.format(msg, target)))
 
 
 if __name__ == '__main__':
