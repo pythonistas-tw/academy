@@ -1,3 +1,4 @@
+from __future__ import division
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -34,7 +35,9 @@ def do_divide():
     v2 = validate_num(values["value2"])
     if v2 == 0:
         raise ValueError('[Invalid parameter input] value2 could not be 0.')
-    return str(v1 / v2)
+
+    result = validate_num(v1 / v2)
+    return str(result)
 
 def validate_num(var):
     if var is None:
