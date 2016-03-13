@@ -42,5 +42,5 @@ def simple_arithmatic():
 
 if __name__ == '__main__':
 	# uncomment to debug
-	app.debug = True
+	# app.debug = True
 	app.run()

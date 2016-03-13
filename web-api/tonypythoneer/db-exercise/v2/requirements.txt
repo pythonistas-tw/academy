@@ -1,0 +1,9 @@
+flask==0.10.1
+flask-sqlalchemy==2.1
+flask-migrate==1.7.0
+flask-script==2.0.5
+flask-marshmallow==0.6.2
+flask-login==0.3.2
+marshmallow==2.5.0
+marshmallow-sqlalchemy==0.8.0
+webargs==1.2.0

@@ -20,6 +20,18 @@ class User(Base):
         assert '@' in email, "Account format isn't correct! (Correct sample: default@gmail.com)"
         return email
 
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.uid)
+
     def __repr__(self):
         return "<User(uid={}, account={})>".format(self.uid, self.account)
 
@@ -72,6 +84,16 @@ class DBUse():
             for i in result:
                 print ("ID #{}, Account {}".format(i.uid, i.account))
             return result
+
+    def f_login(self, account=None, password=None):
+        if account and password:
+            try:
+                result = self.session.query(User).filter_by(account=account).one()
+                if result.password == password:
+                    return result
+            except NoResultFound:
+                return None
+            return None
 
     def f_update(self, user=None, account=None, password=None):
         if not user:
