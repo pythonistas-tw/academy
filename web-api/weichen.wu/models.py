@@ -1,19 +1,20 @@
-import sqlalchemy
+#import sqlalchemy
+#from sqlalchemy import create_engine
+#from sqlalchemy.ext.declarative import declarative_base
+#from sqlalchemy import Column, Integer, String
+#from sqlalchemy.orm import sessionmaker
+#Base = declarative_base()
 
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import sessionmaker
+from app import app, db
 import hashlib
- 
-Base = declarative_base()
- 
-class User(Base):
+
+
+class User(db.Model):
     __tablename__ = 'user'
  
-    id = Column(Integer, primary_key=True)
-    account = Column(String)
-    password = Column(String)
+    id = db.Column(db.Integer, primary_key=True)
+    account = db.Column(db.String)
+    password = db.Column(db.String)
  
     def __init__(self, account, password):
         self.account = account
@@ -22,8 +23,20 @@ class User(Base):
     def __repr__(self):
        return "User('%s', '%s')" % \
            (self.account, self.password)
- 
+    def is_authenticated(self):
+        return True
 
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return unicode(self.id)
+
+
+'''
 if __name__ == '__main__':
     engine = create_engine('sqlite:///:memory:', echo=True)
     Base.metadata.create_all(engine)
@@ -52,5 +65,5 @@ if __name__ == '__main__':
     	print row
 	
     session.commit()
-
+'''
     

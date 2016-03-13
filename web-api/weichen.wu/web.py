@@ -1,18 +1,42 @@
-from flask import Flask
-from flask import request
-from flask import render_template
-
+from flask import Flask, render_template, redirect, url_for, request
+from flask import flash, session
+from flask.ext.wtf import Form
+from wtforms import TextField, BooleanField, PasswordField, validators
 
 app = Flask(__name__)
 app.debug = True
 app.jinja_env.add_extension('jinja2.ext.loopcontrols')
+app.config.update(
+    DEBUG=True,
+    SECRET_KEY='0dsuefce3dxc'
+) 
+
+class LoginForm(Form):
+  username = TextField('Username')
+  password = PasswordField('Password')
+
 
 @app.route("/")
 def hello():
     return "Hello World!"
+
 @app.route("/test_show")
 def show():
     return render_template('show.html', op="test" ,value1="1", value2="2", result="3")
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    print "Loging............"
+    if form.validate_on_submit():
+      print "submit success "
+      flash('Logged in successfully.')
+      next = fequest.args.get('next')
+      if not next_is_valid(next):
+        return flask.abort(400)
+      #render_template('hello.html')
+
+    return render_template('login.html', form=form)
 
 def check_parameter(value1, value2):
   if value1 == None or value2==None:
