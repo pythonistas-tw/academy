@@ -27,6 +27,22 @@ app = Flask(__name__)
 def hello(name = None):
     return render_template('hello.html', name=name)
 
+
+@app.route('/count', methods=['GET'])
+def count():
+    op = request.args.get('op')
+    value1 = request.args.get('value1')
+    value2 = request.args.get('value2')
+    param = []
+    param.append(value1)
+    param.append(value2)
+    chk, status, error_msg = check_parameter(param)
+    if chk:
+        if op == 'sum':
+            return render_template('count.html', msg=float_2_dec(float(value1) + float(value2)))
+    else:
+       return render_template('count.html', msg=error_msg)
+
 @app.route('/sum', methods=['GET'])
 def sum():
     sum_result = 0
