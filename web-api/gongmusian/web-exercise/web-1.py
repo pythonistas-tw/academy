@@ -39,7 +39,16 @@ def count():
     chk, status, error_msg = check_parameter(param)
     if chk:
         if op == 'sum':
-            return render_template('count.html', status=status, value1=value1, op='X', value2=value2, answer=float_2_dec(float(value1) + float(value2)), error_msg=error_msg)
+            return render_template('count.html', status=status, value1=value1, op='+', value2=value2, answer=float_2_dec(float(value1) + float(value2)), error_msg=error_msg)
+        elif op == 'minus':
+            return render_template('count.html', status=status, value1=value1, op='-', value2=value2, answer=float_2_dec(float(value1) - float(value2)), error_msg=error_msg)
+        elif op == 'multiply':
+            return render_template('count.html', status=status, value1=value1, op='X', value2=value2, answer=float_2_dec(float(value1) * float(value2)), error_msg=error_msg)
+        elif op == 'divide':
+            if float(value2) == 0:
+                return render_template('count.html', status=status, value1=value1, op='/', value2=value2, answer=" value2 can not equal 0", error_msg=error_msg)
+            else:
+                return render_template('count.html', status=status, value1=value1, op='/', value2=value2, answer=float_2_dec(float(value1) / float(value2)), error_msg=error_msg)
     else:
        return render_template('count.html', msg=error_msg)
 
