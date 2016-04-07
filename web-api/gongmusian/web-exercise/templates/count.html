@@ -1,7 +1,12 @@
 <!doctype html>
-<title>The answer</title>
-{% if msg %}
-  <h1>{{ msg }}!</h1>
-{% else %}
-  <h1>Hello World!</h1>
-{% endif %}
+<html lang="en">
+<head>
+    <title>Answer</title>
+</head>
+<body>
+  {% if status == 200 %}
+    <h1>{{value1}}  {{op}}  {{value2}}  =  {{answer}}</h1>
+  {% else %}
+    <h1>Sorry {{msg}} !</h1>
+  {% endif %}
+</body>

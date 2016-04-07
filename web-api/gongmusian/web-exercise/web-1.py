@@ -39,7 +39,7 @@ def count():
     chk, status, error_msg = check_parameter(param)
     if chk:
         if op == 'sum':
-            return render_template('count.html', msg=float_2_dec(float(value1) + float(value2)))
+            return render_template('count.html', status=status, value1=value1, op='X', value2=value2, answer=float_2_dec(float(value1) + float(value2)), error_msg=error_msg)
     else:
        return render_template('count.html', msg=error_msg)
 
