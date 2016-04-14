@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, render_template
 
 def isfloat(s):
     try: 
@@ -24,8 +24,8 @@ def float_2_dec(number):
 
 app = Flask(__name__)
 @app.route('/')
-def hello():
-    return 111
+def hello(name = None):
+    return render_template('hello.html', name=name)
 
 @app.route('/sum', methods=['GET'])
 def sum():
@@ -95,5 +95,6 @@ def page_no_found(e):
     return jsonify(Error='Page No Found', status=404)
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(debug = True, host='0.0.0.0', port=8080)
+    # setting host='0.0.0.0' and port=8080 running on cloud9
 

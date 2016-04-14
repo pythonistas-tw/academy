@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Answer</title>
+</head>
+<body>
+  {% if status == 200 %}
+    <h1>{{value1}}  {{op}}  {{value2}}  =  {{answer}}</h1>
+  {% else %}
+    <h1>Sorry {{msg}} !</h1>
+  {% endif %}
+</body>
