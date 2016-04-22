@@ -59,5 +59,7 @@ docs/_build/
 # PyBuilder
 target/
 
+# ipython notebook temp files
+.ipynb_checkpoints
 # Other
 *.sqlite
