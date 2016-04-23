@@ -15,17 +15,53 @@ class CalculateAPITest(unittest.TestCase):
         response = tester.get('/sum?value1=1&value2=1')
         self.assertEqual(json.loads(response.data), 2)
 
+    def test_sum_fail_with_char_input(self):
+        tester = app.test_client(self)
+        response = tester.get('/sum?value1=1&value2=3r')
+        self.assertEqual(response.status_code, 406)
+        self.assertEqual(response.data, 'Variables should be integer.')
+
+    def test_sum_fail_with_missing_necessary_var(self):
+        tester = app.test_client(self)
+        response = tester.get('/sum?value1=1')
+        self.assertEqual(response.status_code, 406)
+        self.assertEqual(response.data, 'Missing necessary variables input.')
+
     def test_minus_success(self):
         tester = app.test_client(self)
         response = tester.get('/minus?value1=1&value2=1')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.data), 0)
 
+    def test_minus_fail_with_char_input(self):
+        tester = app.test_client(self)
+        response = tester.get('/minus?value1=1&value2=3r')
+        self.assertEqual(response.status_code, 406)
+        self.assertEqual(response.data, 'Variables should be integer.')
+
+    def test_minus_fail_with_missing_necessary_var(self):
+        tester = app.test_client(self)
+        response = tester.get('/minus?value1=1')
+        self.assertEqual(response.status_code, 406)
+        self.assertEqual(response.data, 'Missing necessary variables input.')
+
     def test_multiply_success(self):
         tester = app.test_client(self)
         response = tester.get('/multiply?value1=1&value2=1')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(json.loads(response.data), 1)
+
+    def test_multiply_fail_with_char_input(self):
+        tester = app.test_client(self)
+        response = tester.get('/multiply?value1=1&value2=3r')
+        self.assertEqual(response.status_code, 406)
+        self.assertEqual(response.data, 'Variables should be integer.')
+
+    def test_multiply_fail_with_missing_necessary_var(self):
+        tester = app.test_client(self)
+        response = tester.get('/multiply?value1=1')
+        self.assertEqual(response.status_code, 406)
+        self.assertEqual(response.data, 'Missing necessary variables input.')
 
     def test_divide_success_when_result_is_integer(self):
         tester = app.test_client(self)
@@ -44,13 +80,19 @@ class CalculateAPITest(unittest.TestCase):
         response = tester.get('/divide?value1=1&value2=0')
         # pprint.pprint(response)
         self.assertEqual(response.status_code, 406)
-        self.assertEqual(response.data, '[Invalid input] value2 could not be zero.')
+        self.assertEqual(response.data, 'Value2 could not be zero.')
 
     def test_divide_fail_with_char_input(self):
         tester = app.test_client(self)
         response = tester.get('/divide?value1=1&value2=a')
         self.assertEqual(response.status_code, 406)
-        self.assertEqual(response.data, '[Invalid input] variables should be integer.')
+        self.assertEqual(response.data, 'Variables should be integer.')
+
+    def test_divide_fail_with_missing_necessary_var(self):
+        tester = app.test_client(self)
+        response = tester.get('/divide?value1=1')
+        self.assertEqual(response.status_code, 406)
+        self.assertEqual(response.data, 'Missing necessary variables input.')
 
     def tearDown(self):
         pass

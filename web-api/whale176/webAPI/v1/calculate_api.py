@@ -1,6 +1,7 @@
 from __future__ import division
 import re
 from flask import Flask, request
+import sys
 
 app = Flask(__name__)
 
@@ -12,54 +13,80 @@ def index():
 
 @app.route('/sum')
 def do_sum():
-    v1, v2 = read_args_from_url()
-    return str(v1 + v2)
+    try:
+        v1, v2 = read_args_from_url()
+        r = str(v1 + v2)
+    except TypeError:
+        return 'Missing necessary variables input.', 406
+    except ValueError:
+        return 'Variables should be integer.', 406
+    else:
+        return r
 
 
 @app.route('/minus')
 def do_minus():
-    v1, v2 = read_args_from_url()
-    return str(v1 - v2)
+    try:
+        v1, v2 = read_args_from_url()
+        r = str(v1 - v2)
+    except TypeError:
+        return 'Missing necessary variables input.', 406
+    except ValueError:
+        return 'Variables should be integer.', 406
+    else:
+        return r
 
 
 @app.route('/multiply')
 def do_multiply():
-    v1, v2 = read_args_from_url()
-    return str(v1 * v2)
+    try:
+        v1, v2 = read_args_from_url()
+        r = str(v1 * v2)
+    except TypeError:
+        return 'Missing necessary variables input.', 406
+    except ValueError:
+        return 'Variables should be integer.', 406
+    else:
+        return r
 
 
 @app.route('/divide')
 def do_divide():
     try:
         v1, v2 = read_args_from_url()
-        if type(v1) or type(v2) == 'str':
-            raise ValueError
-        r = (v1 / v2)
+        r = str(v1 / v2)
+    except TypeError:
+        return 'Missing necessary variables input.', 406
     except ValueError:
-        return '[Invalid input] variables should be integer.', 406
+        return 'Variables should be integer.', 406
     except ZeroDivisionError:
-        return '[Invalid input] value2 could not be zero.', 406
+        return 'Value2 could not be zero.', 406
     else:
-        return str(r)
+        return r
+
+
+'''
+1. check value1 and value2 are input. => TypeError
+2. validate variables are float or int or neither. => ValueError
+'''
 
 
 def validate_input(variables):
     valid_vars = []
-    try:
-        for var in variables:
-            is_float = re.compile(r'((\d+)\.(\d*))')
-            is_int = re.compile(r'^(\d*)$')
-            if is_float.match(var):
-                valid_vars.append(float(var))
-            elif is_int.match(var):
-                valid_vars.append(int(var))
-            else:
-                raise ValueError
 
-    except ValueError:
-        return '[Invalid input] variables should be integer.', 406
-    else:
-        return valid_vars
+    is_float = re.compile(r'((\d+)\.(\d*))')
+    is_int = re.compile(r'^(\d*)$')
+    for var in variables:
+        if var is None:
+            raise TypeError
+
+        if is_float.match(var):
+            valid_vars.append(float(var))
+        elif is_int.match(var):
+            valid_vars.append(int(var))
+        else:
+            raise ValueError
+    return valid_vars
 
 
 def read_args_from_url():
