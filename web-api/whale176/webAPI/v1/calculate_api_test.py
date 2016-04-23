@@ -46,6 +46,12 @@ class CalculateAPITest(unittest.TestCase):
         self.assertEqual(response.status_code, 406)
         self.assertEqual(response.data, '[Invalid input] value2 could not be zero.')
 
+    def test_divide_fail_with_char_input(self):
+        tester = app.test_client(self)
+        response = tester.get('/divide?value1=1&value2=a')
+        self.assertEqual(response.status_code, 406)
+        self.assertEqual(response.data, '[Invalid input] variables should be integer.')
+
     def tearDown(self):
         pass
 

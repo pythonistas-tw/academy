@@ -1,5 +1,4 @@
 from __future__ import division
-from pprint import pprint
 import re
 from flask import Flask, request
 
@@ -31,12 +30,17 @@ def do_multiply():
 
 @app.route('/divide')
 def do_divide():
-    v1, v2 = read_args_from_url()
     try:
+        v1, v2 = read_args_from_url()
+        if type(v1) or type(v2) == 'str':
+            raise ValueError
         r = (v1 / v2)
-        return str(r)
+    except ValueError:
+        return '[Invalid input] variables should be integer.', 406
     except ZeroDivisionError:
         return '[Invalid input] value2 could not be zero.', 406
+    else:
+        return str(r)
 
 
 def validate_input(variables):
@@ -44,16 +48,18 @@ def validate_input(variables):
     try:
         for var in variables:
             is_float = re.compile(r'((\d+)\.(\d*))')
-            is_int = re.compile(r'(\d*)')
+            is_int = re.compile(r'^(\d*)$')
             if is_float.match(var):
                 valid_vars.append(float(var))
             elif is_int.match(var):
                 valid_vars.append(int(var))
             else:
                 raise ValueError
-        return valid_vars
+
     except ValueError:
         return '[Invalid input] variables should be integer.', 406
+    else:
+        return valid_vars
 
 
 def read_args_from_url():
