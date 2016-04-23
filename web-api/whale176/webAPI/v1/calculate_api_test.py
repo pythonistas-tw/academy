@@ -1,12 +1,11 @@
-from pprint import pprint
 from calculate_api import app
 import json
 import unittest
 
 __author__ = 'whale176'
 
-class CalculateAPITest(unittest.TestCase):
 
+class CalculateAPITest(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
         self.app = app.test_client()
@@ -49,6 +48,7 @@ class CalculateAPITest(unittest.TestCase):
 
     def tearDown(self):
         pass
+
 
 if __name__ == '__main__':
     unittest.main()
