@@ -1,7 +1,6 @@
 from __future__ import division
 import re
 from flask import Flask, request
-import sys
 
 app = Flask(__name__)
 
