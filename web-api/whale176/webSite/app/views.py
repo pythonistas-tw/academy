@@ -1,16 +1,23 @@
 import re
-from flask import Flask, request, render_template
-
-__author__ = 'whale176'
-app = Flask(__name__)
+from flask import request, render_template
+from app import app
+from .forms import LoginForm
 
 
 @app.route('/')
+@app.route('/index')
 def index():
-    return 'Welcome! You are able to use the url to calculate sum/minus/multiply/divide with the parameters.'
+    # return 'Welcome! You are able to use the url to calculate sum/minus/multiply/divide with the parameters.'
+    user = {'username': 'Whale176'}  # fake user
+    return render_template("index.html", user=user)
 
 
-# http://127.0.0.1/count?op=sum&value1=1&value2=1
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    return render_template('login.html', form=form)
+
+
 @app.route('/count')
 def do_cal():
     error_msg = None
@@ -61,7 +68,3 @@ def read_args_from_url():
     value2 = request.args.get('value2')
     validate_input(op, value1, value2)
     return [op, value1, value2]
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
