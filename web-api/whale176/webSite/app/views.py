@@ -1,7 +1,15 @@
 import re
-from flask import request, render_template, redirect
-from app import app
+from flask import request, render_template, redirect, url_for, g, session
+from app import app, db
 from .forms import LoginForm, RegistrationForm
+from app.models import User
+
+# @app.route('/testdb')
+# def testdb():
+#     if db.session.query("1").from_statement("SELECT 1").all():
+#         return 'It works.'
+#     else:
+#         return 'Something is broken.'
 
 
 @app.route('/')
@@ -15,10 +23,12 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    print('logining')
     if form.validate_on_submit():
-        print('Login requested for OpenID="%s", remember_me=%s' % (form.username.data, str(form.remember_me.data)))
+        session['remember_me'] = form.remember_me.data
+        session['username'] = form.username.data
         return redirect('/index')
-    return render_template('login.html', form=form)
+    return render_template('login.html', title='Log In', form=form)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -28,10 +38,13 @@ def signup():
         if not form.validate():
             return render_template('signup.html', form=form)
         else:
-            return "[1] Create a new user [2] sign in the user [3] redirect to the user's profile"
+            newuser = User(form.username.data, form.email.data, form.password.data)
+            db.session.add(newuser)
+            db.session.commit()
+            redirect(request.args.get('next') or url_for('index'))
 
     elif request.method == 'GET':
-        return render_template('signup.html', form=form)
+        return render_template('signup.html', title='Register', form=form)
 
 
 @app.route('/count')

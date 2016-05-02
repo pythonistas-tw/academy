@@ -1,4 +1,4 @@
-from flask.ext.wtf import Form
+from flask_wtf import Form
 from wtforms import StringField, BooleanField, PasswordField, SubmitField
 from wtforms.validators import DataRequired
 from app.models import User
@@ -8,7 +8,7 @@ class LoginForm(Form):
     username = StringField('Username', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember_me', default=False)
-
+    submit = SubmitField("Log in")
 
 #
 # class RegistrationForm(Form):
@@ -37,9 +37,11 @@ class RegistrationForm(Form):
             return False
         user_email = User.query.filter_by(email=self.email.data.lower()).first()
         user_name = User.query.filter_by(username=self.username.data).first()
-        if not user_email:
-            if not user_name:
-                return True
+
+        if user_email:
+            self.email.errors.append("This email is already taken")
+            return False
+        if user_name:
             self.username.errors.append("This username is already taken")
-        self.email.errors.append("This email is already taken")
-        return False
+            return False
+        return True

@@ -2,10 +2,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Sign In</h1>
+<h1>Login In</h1>
 <form action="" method="post" name="login">
-
-
     <p>username:<br>
         {{ form.username(size=25) }}<br>
         {% for error in form.username.errors %}
@@ -23,6 +21,6 @@
 
     <p>{{ form.remember_me }} Remember Me</p>
 
-    <p><input type="submit" value="Sign In"></p>
+    <p>{{ form.submit }}</p>
 </form>
 {% endblock %}

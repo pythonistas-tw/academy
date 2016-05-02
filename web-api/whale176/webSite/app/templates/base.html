@@ -2,10 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>Welcome</title>
+    {% endif %}
 </head>
 <body>
-<div>Hello! <a href="/index">Home</a></div>
+<div>
+    <a href="/index">Home</a>
+    <a href="/signup">Register</a>
+    <a href="/login">Login</a>
+</div>
 <hr>
 {% block content %}
 {% endblock %}
