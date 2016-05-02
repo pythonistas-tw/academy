@@ -1,7 +1,7 @@
 import re
 from flask import request, render_template, redirect
 from app import app
-from .forms import LoginForm
+from .forms import LoginForm, RegistrationForm
 
 
 @app.route('/')
@@ -19,6 +19,19 @@ def login():
         print('Login requested for OpenID="%s", remember_me=%s' % (form.username.data, str(form.remember_me.data)))
         return redirect('/index')
     return render_template('login.html', form=form)
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    form = RegistrationForm()
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('signup.html', form=form)
+        else:
+            return "[1] Create a new user [2] sign in the user [3] redirect to the user's profile"
+
+    elif request.method == 'GET':
+        return render_template('signup.html', form=form)
 
 
 @app.route('/count')
