@@ -2,16 +2,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Sign In</h1>
-  <form action="" method="post" name="login">
+<h1>Sign In</h1>
+<form action="" method="post" name="login">
 
-      <p>username:<br>
-          {{ form.username(size=25) }}<br>
-      </p>
-      <p>password:<br>
-          {{ form.password(size=25) }}<br>
-      </p>
-      <p>{{ form.remember_me }} Remember Me</p>
-      <p><input type="submit" value="Sign In"></p>
-  </form>
+
+    <p>username:<br>
+        {{ form.username(size=25) }}<br>
+        {% for error in form.username.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}<br>
+    </p>
+
+    <p>password:<br>
+        {{ form.password(size=25) }}<br>
+
+        {% for error in form.password.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}<br>
+    </p>
+
+    <p>{{ form.remember_me }} Remember Me</p>
+
+    <p><input type="submit" value="Sign In"></p>
+</form>
 {% endblock %}
