@@ -1,34 +1,38 @@
 import re
 from flask import request, render_template, redirect, url_for, g, session
+from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db
-from .forms import LoginForm, RegistrationForm
+from .forms import LoginForm, RegistrationForm, SigninForm
 from app.models import User
 
-# @app.route('/testdb')
-# def testdb():
-#     if db.session.query("1").from_statement("SELECT 1").all():
-#         return 'It works.'
-#     else:
-#         return 'Something is broken.'
+
+@app.before_request
+def before_request():
+    g.user = current_user
 
 
 @app.route('/')
 @app.route('/index')
 def index():
     # return 'Welcome! You are able to use the url to calculate sum/minus/multiply/divide with the parameters.'
-    user = {'username': 'Whale176'}  # fake user
+    if 'username' not in session:
+        return redirect(url_for('signin'))
+    user = {'username': session['username']}
     return render_template("index.html", user=user)
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    print('logining')
-    if form.validate_on_submit():
-        session['remember_me'] = form.remember_me.data
-        session['username'] = form.username.data
-        return redirect('/index')
-    return render_template('login.html', title='Log In', form=form)
+@app.route('/signin', methods=['GET', 'POST'])
+def signin():
+    form = SigninForm()
+    if request.method == 'POST':
+        if not form.validate():
+            return render_template('signin.html', form=form)
+        else:
+            session['username'] = form.username.data
+            return redirect(url_for('index'))
+
+    elif request.method == 'GET':
+        return render_template('signin.html', form=form)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -41,10 +45,27 @@ def signup():
             newuser = User(form.username.data, form.email.data, form.password.data)
             db.session.add(newuser)
             db.session.commit()
-            redirect(request.args.get('next') or url_for('index'))
+            session['username'] = newuser.username
+            return redirect(request.args.get('next') or url_for('index'))
 
     elif request.method == 'GET':
         return render_template('signup.html', title='Register', form=form)
+
+
+@app.route('/signout')
+def signout():
+    if 'username' not in session:
+        return redirect(url_for('signin'))
+    session.pop('username', None)
+    return redirect(url_for('index'))
+
+
+# @app.route('/testdb')
+# def testdb():
+#     if db.session.query("1").from_statement("SELECT 1").all():
+#         return 'It works.'
+#     else:
+#         return 'Something is broken.'
 
 
 @app.route('/count')

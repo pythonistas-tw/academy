@@ -1,6 +1,6 @@
 from flask_wtf import Form
 from wtforms import StringField, BooleanField, PasswordField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Email
 from app.models import User
 
 
@@ -9,6 +9,24 @@ class LoginForm(Form):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember_me', default=False)
     submit = SubmitField("Log in")
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+
+    def validate(self):
+        print('is')
+        if not Form.validate(self):
+            return False
+        print('here')
+        user = User.query.filter_by(email=self.username.data).first()
+        print('herew')
+
+        if user and user.check_password(self.password.data):
+            return True
+        else:
+            self.username.errors.append("Invalid username or password")
+            return False
+
 
 #
 # class RegistrationForm(Form):
@@ -22,9 +40,30 @@ class LoginForm(Form):
 #     accept_tos = BooleanField('I accept the TOS', [validators.DataRequired()])
 
 
+class SigninForm(Form):
+    username = StringField("Username", validators=[DataRequired("Please enter your user name.")])
+    password = PasswordField('Password', validators=[DataRequired("Please enter a password.")])
+    submit = SubmitField("Sign In")
+
+    def __init__(self, *args, **kwargs):
+        Form.__init__(self, *args, **kwargs)
+
+    def validate(self):
+        if not Form.validate(self):
+            return False
+
+        user = User.query.filter_by(username=self.username.data).first()
+        if user and user.check_password(self.password.data):
+            return True
+        else:
+            self.username.errors.append("Invalid username or password")
+            return False
+
+
 class RegistrationForm(Form):
     username = StringField("User name", validators=[DataRequired("Please enter your user name.")])
-    email = StringField("Email", validators=[DataRequired("Please enter your email address.")])
+    email = StringField("Email", validators=[DataRequired("Please enter your email address."),
+                                             Email("Please enter your email address.")])
     password = PasswordField('Password', validators=[DataRequired("Please enter a password.")])
     submit = SubmitField("Create account")
 
