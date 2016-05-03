@@ -8,6 +8,13 @@ class User(db.Model):
     pwdhash = db.Column(db.String(54))
     email = db.Column(db.String(120), index=True, unique=True)
 
+    def qry_username(self):
+        user = User.query.filter_by(username=self.username.data).first()
+        # try:
+        return user  # python 3
+        # except NameError:
+        #     return unicode(self.id)  # python 2
+
     def __repr__(self):
         return '<User %r>' % self.username
 
@@ -21,5 +28,3 @@ class User(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.pwdhash, password)
-
-

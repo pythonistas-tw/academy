@@ -1,14 +1,8 @@
 import re
-from flask import request, render_template, redirect, url_for, g, session
-from flask.ext.login import login_user, logout_user, current_user, login_required
+from flask import request, render_template, redirect, url_for, session
 from app import app, db
-from .forms import LoginForm, RegistrationForm, SigninForm
+from .forms import RegistrationForm, SigninForm
 from app.models import User
-
-
-@app.before_request
-def before_request():
-    g.user = current_user
 
 
 @app.route('/')

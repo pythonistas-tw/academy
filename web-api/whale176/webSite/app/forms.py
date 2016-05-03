@@ -4,30 +4,6 @@ from wtforms.validators import DataRequired, Email
 from app.models import User
 
 
-class LoginForm(Form):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember_me', default=False)
-    submit = SubmitField("Log in")
-
-    def __init__(self, *args, **kwargs):
-        Form.__init__(self, *args, **kwargs)
-
-    def validate(self):
-        print('is')
-        if not Form.validate(self):
-            return False
-        print('here')
-        user = User.query.filter_by(email=self.username.data).first()
-        print('herew')
-
-        if user and user.check_password(self.password.data):
-            return True
-        else:
-            self.username.errors.append("Invalid username or password")
-            return False
-
-
 #
 # class RegistrationForm(Form):
 #     username = StringField('Username', [validators.Length(min=4, max=25)])
@@ -51,8 +27,8 @@ class SigninForm(Form):
     def validate(self):
         if not Form.validate(self):
             return False
-
-        user = User.query.filter_by(username=self.username.data).first()
+        user = User.qry_username(self)
+        print(user)
         if user and user.check_password(self.password.data):
             return True
         else:
@@ -68,14 +44,13 @@ class RegistrationForm(Form):
     submit = SubmitField("Create account")
 
     def __init__(self, *args, **kwargs):
-
         Form.__init__(self, *args, **kwargs)
 
     def validate(self):
         if not Form.validate(self):
             return False
         user_email = User.query.filter_by(email=self.email.data.lower()).first()
-        user_name = User.query.filter_by(username=self.username.data).first()
+        user_name = User.qry_username(self)
 
         if user_email:
             self.email.errors.append("This email is already taken")
