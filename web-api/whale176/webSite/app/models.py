@@ -19,7 +19,7 @@ class User(db.Model):
         return '<User %r>' % self.username
 
     def __init__(self, username, email, password):
-        self.username = username.title()
+        self.username = username
         self.email = email.lower()
         self.set_password(password)
 
